@@ -246,7 +246,7 @@ class UploadController extends Controller
             ],
             [
                 "meta_key" => "_virtual",
-                "meta_value" => $product['virtual'] = 0 ? 'no' : 'yes',
+                "meta_value" => $product['virtual'] == 0 ? 'no' : 'yes',
             ],
             [
                 "meta_key" => "_price",
