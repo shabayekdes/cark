@@ -51,6 +51,6 @@ class Product extends Model
      */
     public function term()
     {
-        return $this->belongsToMany(Term::class, 'wpqs_term_relationships', 'object_id', 'term_taxonomy_id');
+        return $this->belongsToMany(Term::class, 'wp_term_relationships', 'object_id', 'term_taxonomy_id');
     }
 }

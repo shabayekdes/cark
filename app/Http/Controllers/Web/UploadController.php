@@ -53,6 +53,11 @@ class UploadController extends Controller
 
                     $productCreated->meta()->createMany($meta);
 
+
+                    $termTaxonomy = explode(",", $productCombine['term_taxonomy_id']);
+                    $termTaxonomyIds = array_fill_keys($termTaxonomy, ['term_order' => 0]);
+
+                    $productCreated->term()->attach($termTaxonomyIds);
                 }
 
                 $thumbData = array_values($thumbArr)[$i];
