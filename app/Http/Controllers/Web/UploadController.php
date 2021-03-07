@@ -23,9 +23,9 @@ class UploadController extends Controller
             $products   =  array_map(function($data) {
                 return str_getcsv(mb_convert_encoding($data, 'UTF-8'), ",");
             }, file(request()->mycsv));
-            $thumbArr   =  array_map('str_getcsv', file(request()->thumb));
+            // $thumbArr   =  array_map('str_getcsv', file(request()->thumb));
 
-            // dd($products);
+            dd($products);
             $headerProduct = array_map('trim', $products[0]);
             $headerThumb = array_map('trim', $thumbArr[0]);
 
@@ -37,7 +37,7 @@ class UploadController extends Controller
             $chunkProducts = array_chunk($products,2);
             for ($i=0; $i < count($chunkProducts); $i++) { 
 
-                $trid = DB::table('wp_icl_translations')->max('trid');
+                $trid = DB::table('wca_icl_translations')->max('trid');
                 $trid++;
                 $productIds = [];
                 foreach ($chunkProducts[$i] as $product) {
@@ -94,7 +94,7 @@ class UploadController extends Controller
                     ]
                 ]);
 
-                $trid = DB::table('wp_icl_translations')->insert([
+                $trid = DB::table('wca_icl_translations')->insert([
                     [
                         'element_type' => 'post_product',
                         'element_id' => $productIds[0],
