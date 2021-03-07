@@ -11,7 +11,7 @@ class ProductMeta extends Model
      *
      * @var string
      */
-    protected $table = 'wp_postmeta';
+    protected $table = 'wca_postmeta';
 
     /**
      * The attributes that aren't mass assignable.

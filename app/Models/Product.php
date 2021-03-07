@@ -11,7 +11,7 @@ class Product extends Model
      *
      * @var string
      */
-    protected $table = 'wp_posts';
+    protected $table = 'wca_posts';
 
     /**
      * The primary key associated with the table.
