@@ -12,20 +12,30 @@ use App\Http\Controllers\Controller;
 
 class UploadController extends Controller
 {
-    public function index()
+    /**
+     * Create form upload
+     *
+     * @return void
+     */
+    public function create()
     {
-        return view('upload-file');
+        return view('product.upload');
     }
 
-    public function store()
+    /**
+     * Store products from csv
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function store(Request $request)
     {
-        if (request()->has('mycsv')) {
+        if ($request->has('product') || $request->has('thumb')) {
             $products   =  array_map(function($data) {
                 return str_getcsv(mb_convert_encoding($data, 'UTF-8'), ",");
-            }, file(request()->mycsv));
-            // $thumbArr   =  array_map('str_getcsv', file(request()->thumb));
+            }, file($request->product));
+            $thumbArr   =  array_map('str_getcsv', file($request->thumb));
 
-            dd($products);
             $headerProduct = array_map('trim', $products[0]);
             $headerThumb = array_map('trim', $thumbArr[0]);
 

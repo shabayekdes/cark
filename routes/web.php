@@ -24,6 +24,10 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/test', TestController::class);
 
-Route::get('/upload', [UploadController::class, 'index']);
-Route::post('/upload', [UploadController::class, 'store']);
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('products/upload', [UploadController::class, 'create'])->name('products.create');
+    Route::post('products/upload', [UploadController::class, 'store'])->name('products.store');
+});
 

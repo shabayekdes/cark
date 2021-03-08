@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    {{ __('You are logged in!') }}
+                    <a href="{{ route('products.create') }}" class="btn btn-primary">Upload Product</a>
                 </div>
             </div>
         </div>
