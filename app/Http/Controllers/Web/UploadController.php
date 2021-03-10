@@ -30,6 +30,11 @@ class UploadController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'product' => 'required|file',
+            'thumb' => 'required|file',
+        ]);
+
         if ($request->has('product') || $request->has('thumb')) {
             $products   =  array_map(function($data) {
                 return str_getcsv(mb_convert_encoding($data, 'UTF-8'), ",");
@@ -120,6 +125,69 @@ class UploadController extends Controller
                         'source_language_code' => 'en' 
                     ]
                 ]);
+
+
+            }
+
+            return 'Done';
+        }
+    }
+
+    /**
+     * Create form upload
+     *
+     * @return void
+     */
+    public function edit()
+    {
+        return view('product.edit');
+    }
+
+    /**
+     * Store products from csv
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function update(Request $request)
+    {
+        $request->validate(['product' => 'required|file']);
+
+        if ($request->has('product')) {
+            $products   =  array_map(function($data) {
+                return str_getcsv(mb_convert_encoding($data, 'UTF-8'), ",");
+            }, file($request->product));
+
+            $headerProduct = array_map('trim', $products[0]);
+
+            unset($products[0]);
+
+            foreach ($products as $product) {
+
+                $productCombine = array_combine($headerProduct, $product);
+                $productFiltered = array_filter($productCombine);
+
+                $sliceProduct = Arr::only($productFiltered, ['post_author', 'post_content', 'post_title', 'post_excerpt']);
+                $productUpdated = Product::where('ID', $productCombine["﻿ID"])->first();
+                
+                $productUpdated->update($sliceProduct);
+
+                $sliceProductMetas = Arr::only($productFiltered, ['_regular_price', '_sale_price', '_virtual', '_price']);
+
+                foreach ($sliceProductMetas as $key => $value) {
+                    ProductMeta::where('post_id', $productCombine["﻿ID"])->where('meta_key', $key)->update([
+                        'meta_value' => $value
+                    ]);
+                }
+
+                if(isset($productFiltered['term_taxonomy_id'])){
+                    $productUpdated->term()->detach();
+
+                    $termTaxonomy = explode(",", $productCombine['term_taxonomy_id']);
+                    $termTaxonomyIds = array_fill_keys($termTaxonomy, ['term_order' => 0]);
+
+                    $productUpdated->term()->attach($termTaxonomyIds);
+                }
 
 
             }

@@ -8,21 +8,34 @@
                 <div class="card-header">Upload Products</div>
 
                 <div class="card-body">
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
                     <form action="{{ route('products.store') }}" method="post" enctype="multipart/form-data">
                         @csrf
 
                         <div class="form-group">
-                          <label for="productFileLabel">Product File</label>
-                          <input type="file" class="form-control" id="productFileLabel" name="product" aria-describedby="productHelp">
-                          <small id="productHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                            <label for="productFileLabel">Product File</label>
+                            <input type="file" class="form-control" id="productFileLabel" name="product"
+                                aria-describedby="productHelp">
+                            <small id="productHelp" class="form-text text-muted">We'll never share your email with
+                                anyone else.</small>
                         </div>
                         <div class="form-group">
                             <label for="productImageLabel">Products Images</label>
-                            <input type="file" class="form-control" id="productImageLabel" name="thumb" aria-describedby="thumbHelp">
-                            <small id="thumbHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                          </div>
+                            <input type="file" class="form-control" id="productImageLabel" name="thumb"
+                                aria-describedby="thumbHelp">
+                            <small id="thumbHelp" class="form-text text-muted">We'll never share your email with anyone
+                                else.</small>
+                        </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
-                      </form>
+                    </form>
                 </div>
             </div>
         </div>

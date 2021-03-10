@@ -29,5 +29,8 @@ Route::get('/test', TestController::class);
 Route::middleware('auth')->group(function () {
     Route::get('products/upload', [UploadController::class, 'create'])->name('products.create');
     Route::post('products/upload', [UploadController::class, 'store'])->name('products.store');
+
+    Route::get('products/edit', [UploadController::class, 'edit'])->name('products.edit');
+    Route::put('products/edit', [UploadController::class, 'update'])->name('products.update');
 });
 
