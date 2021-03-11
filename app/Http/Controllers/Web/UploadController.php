@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 
 class UploadController extends Controller
 {
+
     /**
      * Create form upload
      *
@@ -129,7 +130,9 @@ class UploadController extends Controller
 
             }
 
-            return 'Done';
+            return redirect()
+                        ->back()
+                        ->with('success', 'Products created successfully!');
         }
     }
 

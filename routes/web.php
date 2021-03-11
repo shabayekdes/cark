@@ -34,4 +34,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('products/edit', [UploadController::class, 'edit'])->name('products.edit');
     Route::put('products/edit', [UploadController::class, 'update'])->name('products.update');
+
+    Route::get('done', [UploadController::class, 'done'])->name('done');
+
 });
