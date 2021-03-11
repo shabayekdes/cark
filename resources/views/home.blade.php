@@ -15,6 +15,8 @@
                     @endif
 
                     <a href="{{ route('products.create') }}" class="btn btn-primary">Upload Product</a>
+                    <a href="{{ route('products.edit') }}" class="btn btn-success">Edit Product</a>
+
                 </div>
             </div>
         </div>
