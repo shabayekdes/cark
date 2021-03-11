@@ -18,7 +18,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes([
+    'register' => false
+]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -33,4 +35,3 @@ Route::middleware('auth')->group(function () {
     Route::get('products/edit', [UploadController::class, 'edit'])->name('products.edit');
     Route::put('products/edit', [UploadController::class, 'update'])->name('products.update');
 });
-
