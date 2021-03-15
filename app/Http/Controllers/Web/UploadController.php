@@ -69,9 +69,16 @@ class UploadController extends Controller
 
                     $productCreated->meta()->createMany($meta);
 
-
                     $termTaxonomy = explode(",", $productCombine['term_taxonomy_id']);
-                    $termTaxonomyIds = array_fill_keys($termTaxonomy, ['term_order' => 0]);
+                    if (!empty($productCombine['attributes'])) {
+                        $termAttribute = explode(",", $productCombine['attributes']);
+                    }else {
+                        $termAttribute = [];
+                    }
+
+                    $termTaxonomy[] = 2;
+                    $result = array_unique(array_merge($termTaxonomy, $termAttribute));
+                    $termTaxonomyIds = array_fill_keys($result, ['term_order' => 0]);
 
                     $productCreated->term()->attach($termTaxonomyIds);
                 }
@@ -244,6 +251,7 @@ class UploadController extends Controller
      */
     protected function productMetaInsert($product)
     {
+
         $meta = [
             [
                 "meta_key" => "_edit_lock",
@@ -334,6 +342,17 @@ class UploadController extends Controller
                 "meta_value" => $product['_regular_price'],
             ]
         ];
+
+        if (!empty($product['_sale_price_dates_from']) && !empty($product['_sale_price_dates_to'])) {
+            $meta[] = [
+                "meta_key" => "_sale_price_dates_from",
+                "meta_value" => strtotime($product['_sale_price_dates_from']),
+            ];
+            $meta[] = [
+                "meta_key" => "_sale_price_dates_to",
+                "meta_value" => strtotime($product['_sale_price_dates_to']),
+            ];
+        }
 
         return $meta;
     }
