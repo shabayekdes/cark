@@ -42,11 +42,19 @@ class UploadController extends Controller
             }, file($request->product));
             $thumbArr   =  array_map('str_getcsv', file($request->thumb));
 
+
             $headerProduct = array_map('trim', $products[0]);
             $headerThumb = array_map('trim', $thumbArr[0]);
 
             unset($products[0]);
             unset($thumbArr[0]);
+
+            $productsCount = count($products) / 2;
+            if($productsCount != $thumbArr){
+            return redirect()
+                        ->back()
+                        ->with('error', 'Products not equal thumb count!');
+            }
 
             // dd(array_chunk($data,2));
 
