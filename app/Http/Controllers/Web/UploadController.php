@@ -67,6 +67,8 @@ class UploadController extends Controller
 
                     $meta = $this->productMetaInsert($productCombine);
 
+                    // dd($meta);
+
                     $productCreated->meta()->createMany($meta);
 
                     $termTaxonomy = explode(",", $productCombine['term_taxonomy_id']);
@@ -182,7 +184,15 @@ class UploadController extends Controller
                 
                 $productUpdated->update($sliceProduct);
 
-                $sliceProductMetas = Arr::only($productFiltered, ['_regular_price', '_sale_price', '_virtual', '_price']);
+                if (!empty($productFiltered['_sale_price_dates_from'])) {
+                    $productFiltered['_sale_price_dates_from'] = strtotime($productFiltered['_sale_price_dates_from']);
+                }
+
+                if (!empty($productFiltered['_sale_price_dates_to'])) {
+                    $productFiltered['_sale_price_dates_to'] = strtotime($productFiltered['_sale_price_dates_to']);
+                }
+
+                $sliceProductMetas = Arr::only($productFiltered, ['_regular_price', '_sale_price', '_virtual', '_price', '_sale_price_dates_from', '_sale_price_dates_to']);
 
                 foreach ($sliceProductMetas as $key => $value) {
                     ProductMeta::where('post_id', $productCombine["﻿ID"])->where('meta_key', $key)->update([
@@ -191,15 +201,12 @@ class UploadController extends Controller
                 }
 
                 if(isset($productFiltered['term_taxonomy_id'])){
-                    $productUpdated->term()->detach();
-
                     $termTaxonomy = explode(",", $productCombine['term_taxonomy_id']);
+                    $termTaxonomy[] = 2;
                     $termTaxonomyIds = array_fill_keys($termTaxonomy, ['term_order' => 0]);
 
-                    $productUpdated->term()->attach($termTaxonomyIds);
+                    $productUpdated->term()->sync($termTaxonomyIds);
                 }
-
-
             }
 
             return 'Done';
@@ -351,6 +358,25 @@ class UploadController extends Controller
             $meta[] = [
                 "meta_key" => "_sale_price_dates_to",
                 "meta_value" => strtotime($product['_sale_price_dates_to']),
+            ];
+        }
+
+        if (!empty($product['product_attributes'])) {
+            $productAttributes = explode(",", $product['product_attributes']);
+            $productAttributes = collect($productAttributes)->mapWithKeys(function ($item, $key) {
+                return [$item => [
+                    'name' => $item,
+                    "value" => "",
+                    "position" => $key,
+                    "is_visible" => 1,
+                    "is_variation" => 0,
+                    "is_taxonomy" => 1,
+                ]];
+            });
+            
+            $meta[] = [
+                "meta_key" => "_product_attributes",
+                "meta_value" => serialize($productAttributes->all()),
             ];
         }
 
