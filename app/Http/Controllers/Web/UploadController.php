@@ -91,6 +91,8 @@ class UploadController extends Controller
                     $result = array_unique(array_merge($termTaxonomy, $termAttribute));
                     $termTaxonomyIds = array_fill_keys($result, ['term_order' => 0]);
 
+                    DB::table('wca_term_taxonomy')->whereIn('term_taxonomy_id', $result)->increment('count');
+
                     $productCreated->term()->attach($termTaxonomyIds);
                 }
 
@@ -213,8 +215,12 @@ class UploadController extends Controller
                     $termTaxonomy = explode(",", $productCombine['term_taxonomy_id']);
                     $termTaxonomy[] = 2;
                     $termTaxonomyIds = array_fill_keys($termTaxonomy, ['term_order' => 0]);
+                    $termIds = $productUpdated->term()->get()->pluck('term_id')->toArray();
+                    DB::table('wca_term_taxonomy')->whereIn('term_taxonomy_id', $termIds)->where('count', '!=', 0)->decrement('count');
 
                     $productUpdated->term()->sync($termTaxonomyIds);
+                    DB::table('wca_term_taxonomy')->whereIn('term_taxonomy_id', $termTaxonomy)->increment('count');
+
                 }
             }
 

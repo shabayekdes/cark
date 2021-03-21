@@ -16,8 +16,11 @@ class TestController extends Controller
      */
     public function __invoke(Request $request)
     {
+      $product = Product::find(8916);
+        dd($product->term()->get()->pluck('term_id')->toArray());
+      $taxonomy = DB::table('wca_term_taxonomy')->whereIn('term_taxonomy_id', [1,2])->where('count', '!=', 0)->decrement('count');
+      dd($taxonomy);
 
-        $product = Product::find(1);
 
         $product->term()->sync([ 2 => ['term_order' => 0]]);
 
