@@ -50,7 +50,7 @@ class UploadController extends Controller
             unset($thumbArr[0]);
 
             $productsCount = count($products) / 2;
-            if($productsCount != $thumbArr){
+            if($productsCount != count($thumbArr)){
             return redirect()
                         ->back()
                         ->with('error', 'Products not equal thumb count!');
