@@ -35,6 +35,7 @@ class UploadController extends Controller
             'product' => 'required|file',
             'thumb' => 'required|file',
         ]);
+        DB::beginTransaction();
 
         if ($request->has('product') || $request->has('thumb')) {
             $products   =  array_map(function($data) {
@@ -144,7 +145,7 @@ class UploadController extends Controller
                     ]
                 ]);
 
-
+                DB::commit();
             }
 
             return redirect()
@@ -252,7 +253,7 @@ class UploadController extends Controller
             "comment_status" => "closed",
             "ping_status" => "closed",
             "post_content_filtered" => "",
-            "guid" => "https://recruitment.talentsmine.net/job/{$slug}",
+            "guid" => "https://upload.cark-egypt.com/{$slug}",
         ];  
 
         return array_merge($sliceProduct, $date);
