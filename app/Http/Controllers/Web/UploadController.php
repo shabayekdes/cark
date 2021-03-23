@@ -105,6 +105,12 @@ class UploadController extends Controller
 
                 $thumbCreated = Product::create($result);
 
+                $metadata = [
+                    "width" => 800,
+                    "height" => 800,
+                    "file" => $thumbData['_wp_attached_file']
+                  ];
+                  
                 $thumbMeta = [
                     [
                         "meta_key" => "_wp_attached_file",
@@ -112,7 +118,7 @@ class UploadController extends Controller
                     ],
                     [
                         "meta_key" => "_wp_attachment_metadata",
-                        "meta_value" => "",
+                        "meta_value" => serialize($metadata)
                     ]
                 ];
                 $thumbCreated->meta()->createMany($thumbMeta);
