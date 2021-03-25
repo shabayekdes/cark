@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Models\Product;
+use App\Models\Taxonomy;
 use App\Models\ProductMeta;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -20,7 +21,9 @@ class UploadController extends Controller
      */
     public function create()
     {
-        return view('product.upload');
+        $taxonomies = Taxonomy::with('term')->where('taxonomy', 'vehicles')->where('parent', 0)->get();
+
+        return view('product.upload', compact('taxonomies'));
     }
 
     /**
@@ -34,6 +37,7 @@ class UploadController extends Controller
         $request->validate([
             'product' => 'required|file',
             'thumb' => 'required|file',
+            'brand' => 'required',
         ]);
         DB::beginTransaction();
 
@@ -79,8 +83,9 @@ class UploadController extends Controller
                     // dd($meta);
 
                     $productCreated->meta()->createMany($meta);
-
-                    $termTaxonomy = explode(",", $productCombine['term_taxonomy_id']);
+                    $years = explode(",", $productCombine['years']);
+                    $categories = explode(",", $productCombine['categories']);
+                    $termTaxonomy = [...$categories, ...$years];
                     if (!empty($productCombine['attributes'])) {
                         $termAttribute = explode(",", $productCombine['attributes']);
                     }else {
@@ -88,7 +93,11 @@ class UploadController extends Controller
                     }
 
                     $termTaxonomy[] = 2;
+                    $termTaxonomy[] = $request->get('brand');
+                    $termTaxonomy[] = $productCombine['model'];
+                    
                     $result = array_unique(array_merge($termTaxonomy, $termAttribute));
+
                     $termTaxonomyIds = array_fill_keys($result, ['term_order' => 0]);
 
                     DB::table('wca_term_taxonomy')->whereIn('term_taxonomy_id', $result)->increment('count');

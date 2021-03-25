@@ -31,7 +31,15 @@
                     @endif
                     <form action="{{ route('products.store') }}" method="post" enctype="multipart/form-data">
                         @csrf
-
+                        <div class="form-group">
+                            <label for="brandSelect">Brand</label>
+                            <select class="form-control" id="brandSelect" name="brand">
+                              <option value="">select one</option>
+                              @foreach ($taxonomies as $taxonomy)
+                                <option value="{{ $taxonomy->term_taxonomy_id }}">{{ $taxonomy->term->name }}</option>
+                              @endforeach
+                            </select>
+                          </div>
                         <div class="form-group">
                             <label for="productFileLabel">Product File</label>
                             <input type="file" class="form-control" id="productFileLabel" name="product"

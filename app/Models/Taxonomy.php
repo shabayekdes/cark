@@ -28,4 +28,12 @@ class Taxonomy extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+        /**
+     * Get the comments for the blog post.
+     */
+    public function term()
+    {
+        return $this->belongsTo(Term::class, 'term_id');
+    }
 }
