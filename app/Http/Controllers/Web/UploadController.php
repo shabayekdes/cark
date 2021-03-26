@@ -21,7 +21,7 @@ class UploadController extends Controller
      */
     public function create()
     {
-        $taxonomies = Taxonomy::with('term')->where('taxonomy', 'vehicles')->where('parent', 0)->get();
+        $taxonomies = Taxonomy::with('term')->where('taxonomy', 'vehicle')->where('parent', 0)->get();
 
         return view('product.upload', compact('taxonomies'));
     }
