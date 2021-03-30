@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
 class UploadController extends Controller
@@ -56,7 +57,8 @@ class UploadController extends Controller
 
             $productsCount = count($products) / 2;
             if($productsCount != count($thumbArr)){
-            return redirect()
+                Log::warning('Product count = ' . $productsCount . ' Images count = ' . count($thumbArr));
+                return redirect()
                         ->back()
                         ->with('error', 'Products not equal thumb count! - Product count = ' . $productsCount . ' Images count = ' . count($thumbArr));
             }
