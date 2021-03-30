@@ -58,7 +58,7 @@ class UploadController extends Controller
             if($productsCount != count($thumbArr)){
             return redirect()
                         ->back()
-                        ->with('error', 'Products not equal thumb count!');
+                        ->with('error', 'Products not equal thumb count! - Product count = ' . $productsCount . ' Images count = ' . count($thumbArr));
             }
 
             // dd(array_chunk($data,2));
