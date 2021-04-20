@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\UploadController;
+use App\Http\Controllers\Web\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,5 +38,9 @@ Route::middleware('auth')->group(function () {
     Route::put('products/edit', [UploadController::class, 'update'])->name('products.update');
 
     Route::get('done', [UploadController::class, 'done'])->name('done');
+
+    Route::get('products/edit-title', [ProductController::class, 'edit'])->name('products.edit.title');
+    Route::put('products/edit-title', [ProductController::class, 'update'])->name('products.update.title');
+
 
 });

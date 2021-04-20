@@ -38,7 +38,7 @@ class UploadController extends Controller
         $request->validate([
             'product' => 'required|file',
             'thumb' => 'required|file',
-            'brand' => 'required',
+            // 'brand' => 'required',
         ]);
         DB::beginTransaction();
 
@@ -51,11 +51,14 @@ class UploadController extends Controller
 
             $headerProduct = array_map('trim', $products[0]);
             $headerThumb = array_map('trim', $thumbArr[0]);
+            dd($products, count($thumbArr));
 
             unset($products[0]);
             unset($thumbArr[0]);
 
             $productsCount = count($products) / 2;
+            dd($products['950'], $thumbArr['401']);
+
             if($productsCount != count($thumbArr)){
                 Log::warning('Product count = ' . $productsCount . ' Images count = ' . count($thumbArr));
                 return redirect()
