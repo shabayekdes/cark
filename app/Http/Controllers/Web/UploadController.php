@@ -51,13 +51,13 @@ class UploadController extends Controller
 
             $headerProduct = array_map('trim', $products[0]);
             $headerThumb = array_map('trim', $thumbArr[0]);
-            dd($products, count($thumbArr));
+            // dd($products, count($thumbArr));
 
             unset($products[0]);
             unset($thumbArr[0]);
 
             $productsCount = count($products) / 2;
-            dd($products['950'], $thumbArr['401']);
+            // dd($products['950'], $thumbArr['401']);
 
             if($productsCount != count($thumbArr)){
                 Log::warning('Product count = ' . $productsCount . ' Images count = ' . count($thumbArr));
