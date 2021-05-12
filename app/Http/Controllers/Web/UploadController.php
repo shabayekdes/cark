@@ -205,6 +205,8 @@ class UploadController extends Controller
 
             unset($products[0]);
 
+            $productIdsFailed = [];
+
             foreach ($products as $product) {
 
                 $productCombine = array_combine($headerProduct, $product);
@@ -212,6 +214,11 @@ class UploadController extends Controller
 
                 $sliceProduct = Arr::only($productFiltered, ['post_author', 'post_content', 'post_title', 'post_excerpt']);
                 $productUpdated = Product::where('ID', $productCombine["﻿ID"])->first();
+
+                if($productUpdated == null){
+                    $productIdsFailed[] = $productCombine["﻿ID"];
+                    continue;
+                }
                 
                 $productUpdated->update($sliceProduct);
 
@@ -242,6 +249,13 @@ class UploadController extends Controller
                     DB::table('wca_term_taxonomy')->whereIn('term_taxonomy_id', $termTaxonomy)->increment('count');
 
                 }
+
+            }
+
+            if(count($productIdsFailed)){
+                return redirect()
+                        ->back()
+                        ->with('error', 'Products not failed to update: ' . implode(', ', $productIdsFailed));
             }
 
             return 'Done';
