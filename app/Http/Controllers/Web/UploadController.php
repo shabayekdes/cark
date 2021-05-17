@@ -230,7 +230,8 @@ class UploadController extends Controller
                     $productFiltered['_sale_price_dates_to'] = strtotime($productFiltered['_sale_price_dates_to']);
                 }
 
-                $sliceProductMetas = Arr::only($productFiltered, ['_regular_price', '_sale_price', '_virtual', '_price', '_sale_price_dates_from', '_sale_price_dates_to']);
+                $sliceProductMetas = Arr::only($productFiltered, ['_regular_price', '_sale_price', '_virtual', '_sale_price_dates_from', '_sale_price_dates_to']);
+                $sliceProductMetas['_price'] = $sliceProductMetas['_regular_price'];
 
                 foreach ($sliceProductMetas as $key => $value) {
                     ProductMeta::where('post_id', $productCombine["﻿ID"])->where('meta_key', $key)->update([
