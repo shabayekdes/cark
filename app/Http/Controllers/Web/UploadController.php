@@ -69,7 +69,7 @@ class UploadController extends Controller
             // dd(array_chunk($data,2));
 
             $chunkProducts = array_chunk($products,2);
-            for ($i=0; $i < count($chunkProducts); $i++) { 
+            for ($i=0; $i < count($chunkProducts); $i++) {
 
                 $trid = DB::table('wca_icl_translations')->max('trid');
                 $trid++;
@@ -100,7 +100,7 @@ class UploadController extends Controller
                     $termTaxonomy[] = 2;
                     $termTaxonomy[] = $request->get('brand');
                     $termTaxonomy[] = $productCombine['model'];
-                    
+
                     $result = array_unique(array_merge($termTaxonomy, $termAttribute));
 
                     $termTaxonomyIds = array_fill_keys($result, ['term_order' => 0]);
@@ -124,7 +124,7 @@ class UploadController extends Controller
                     "height" => 800,
                     "file" => $thumbData['_wp_attached_file']
                   ];
-                  
+
                 $thumbMeta = [
                     [
                         "meta_key" => "_wp_attached_file",
@@ -156,14 +156,14 @@ class UploadController extends Controller
                         'element_id' => $productIds[0],
                         'trid' => $trid,
                         'language_code' => 'en',
-                        'source_language_code' => null 
+                        'source_language_code' => null
                     ],
                     [
                         'element_type' => 'post_product',
                         'element_id' => $productIds[1],
                         'trid' => $trid,
                         'language_code' => 'ar',
-                        'source_language_code' => 'en' 
+                        'source_language_code' => 'en'
                     ]
                 ]);
 
@@ -219,7 +219,7 @@ class UploadController extends Controller
                     $productIdsFailed[] = $productCombine["﻿ID"];
                     continue;
                 }
-                
+
                 $productUpdated->update($sliceProduct);
 
                 if (!empty($productFiltered['_sale_price_dates_from'])) {
@@ -281,7 +281,7 @@ class UploadController extends Controller
                 "post_type",
             ]);
 
-        $slug = Str::slug($sliceProduct["post_title"], '-');
+        $slug = Str::slug($sliceProduct["post_title"], '-') . Str::random(10);
 
         $date = [
             "post_date" => now(),
@@ -295,11 +295,11 @@ class UploadController extends Controller
             "ping_status" => "closed",
             "post_content_filtered" => "",
             "guid" => "https://upload.cark-egypt.com/{$slug}",
-        ];  
+        ];
 
         return array_merge($sliceProduct, $date);
     }
-    
+
     /**
      * Filter product meta to insert into database
      *
@@ -423,7 +423,7 @@ class UploadController extends Controller
                     "is_taxonomy" => 1,
                 ]];
             });
-            
+
             $meta[] = [
                 "meta_key" => "_product_attributes",
                 "meta_value" => serialize($productAttributes->all()),
