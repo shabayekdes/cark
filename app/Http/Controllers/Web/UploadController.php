@@ -71,7 +71,7 @@ class UploadController extends Controller
             $chunkProducts = array_chunk($products,2);
             for ($i=0; $i < count($chunkProducts); $i++) {
 
-                $trid = DB::table('wca_icl_translations')->max('trid');
+                $trid = DB::table('icl_translations')->max('trid');
                 $trid++;
                 $productIds = [];
                 foreach ($chunkProducts[$i] as $product) {
@@ -105,7 +105,7 @@ class UploadController extends Controller
 
                     $termTaxonomyIds = array_fill_keys($result, ['term_order' => 0]);
 
-                    DB::table('wca_term_taxonomy')->whereIn('term_taxonomy_id', $result)->increment('count');
+                    DB::table('term_taxonomy')->whereIn('term_taxonomy_id', $result)->increment('count');
 
                     $productCreated->term()->attach($termTaxonomyIds);
                 }
@@ -150,7 +150,7 @@ class UploadController extends Controller
                     ]
                 ]);
 
-                $trid = DB::table('wca_icl_translations')->insert([
+                $trid = DB::table('icl_translations')->insert([
                     [
                         'element_type' => 'post_product',
                         'element_id' => $productIds[0],
@@ -244,10 +244,10 @@ class UploadController extends Controller
                     $termTaxonomy[] = 2;
                     $termTaxonomyIds = array_fill_keys($termTaxonomy, ['term_order' => 0]);
                     $termIds = $productUpdated->term()->get()->pluck('term_id')->toArray();
-                    DB::table('wca_term_taxonomy')->whereIn('term_taxonomy_id', $termIds)->where('count', '!=', 0)->decrement('count');
+                    DB::table('term_taxonomy')->whereIn('term_taxonomy_id', $termIds)->where('count', '!=', 0)->decrement('count');
 
                     $productUpdated->term()->sync($termTaxonomyIds);
-                    DB::table('wca_term_taxonomy')->whereIn('term_taxonomy_id', $termTaxonomy)->increment('count');
+                    DB::table('term_taxonomy')->whereIn('term_taxonomy_id', $termTaxonomy)->increment('count');
 
                 }
 

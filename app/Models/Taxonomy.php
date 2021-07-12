@@ -11,7 +11,7 @@ class Taxonomy extends Model
      *
      * @var string
      */
-    protected $table = 'wca_term_taxonomy';
+    protected $table = 'term_taxonomy';
 
     /**
      * The primary key associated with the table.

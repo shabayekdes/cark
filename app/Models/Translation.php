@@ -11,7 +11,7 @@ class Translation extends Model
      *
      * @var string
      */
-    protected $table = 'wca_icl_translations';
+    protected $table = 'icl_translations';
 
     /**
      * The primary key associated with the table.

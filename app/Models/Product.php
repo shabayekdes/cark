@@ -11,7 +11,7 @@ class Product extends Model
      *
      * @var string
      */
-    protected $table = 'wca_posts';
+    protected $table = 'posts';
 
     /**
      * The primary key associated with the table.
@@ -51,6 +51,6 @@ class Product extends Model
      */
     public function term()
     {
-        return $this->belongsToMany(Term::class, 'wca_term_relationships', 'object_id', 'term_taxonomy_id');
+        return $this->belongsToMany(Term::class, 'term_relationships', 'object_id', 'term_taxonomy_id');
     }
 }

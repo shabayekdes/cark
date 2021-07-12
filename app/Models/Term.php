@@ -11,7 +11,7 @@ class Term extends Model
      *
      * @var string
      */
-    protected $table = 'wca_terms';
+    protected $table = 'terms';
 
     /**
      * The primary key associated with the table.
