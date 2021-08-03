@@ -8,6 +8,7 @@ use App\Models\ProductMeta;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Imports\ProductsImport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -30,6 +31,7 @@ class UploadController extends Controller
     /**
      * Store products from csv
      *
+     * @deprecated version 1.0
      * @param Request $request
      * @return void
      */
@@ -90,7 +92,7 @@ class UploadController extends Controller
                     $productCreated->meta()->createMany($meta);
                     $years = explode(",", $productCombine['years']);
                     $categories = explode(",", $productCombine['categories']);
-                    $termTaxonomy = [...$categories, ...$years];
+                    // $termTaxonomy = [...$categories, ...$years]; //php7.4
                     if (!empty($productCombine['attributes'])) {
                         $termAttribute = explode(",", $productCombine['attributes']);
                     }else {
@@ -186,143 +188,15 @@ class UploadController extends Controller
     {
         $request->validate([
             'product' => 'required|file',
-            'thumb' => 'required|file',
-            // 'brand' => 'required',
+            // 'thumb' => 'required|file',
+            'brand' => 'required',
         ]);
-        DB::beginTransaction();
+        (new ProductsImport($request->get('brand')))->import($request->file('product'), 'local', \Maatwebsite\Excel\Excel::XLSX);
 
-        if ($request->has('product') || $request->has('thumb')) {
-            $products   =  array_map(function($data) {
-                return str_getcsv(mb_convert_encoding($data, 'UTF-8'), ",");
-            }, file($request->product));
-            $thumbArr   =  array_map('str_getcsv', file($request->thumb));
+        return redirect()
+                    ->back()
+                    ->with('success', 'Products created successfully!');
 
-
-            $headerProduct = array_map('trim', $products[0]);
-            $headerThumb = array_map('trim', $thumbArr[0]);
-            // dd($products, count($thumbArr));
-
-            unset($products[0]);
-            unset($thumbArr[0]);
-
-            $productsCount = count($products) / 2;
-            // dd($products['950'], $thumbArr['401']);
-
-            if($productsCount != count($thumbArr)){
-                Log::warning('Product count = ' . $productsCount . ' Images count = ' . count($thumbArr));
-                return redirect()
-                        ->back()
-                        ->with('error', 'Products not equal thumb count! - Product count = ' . $productsCount . ' Images count = ' . count($thumbArr));
-            }
-
-            // dd(array_chunk($data,2));
-
-            $chunkProducts = array_chunk($products,2);
-            for ($i=0; $i < count($chunkProducts); $i++) {
-
-                $trid = DB::table('icl_translations')->max('trid');
-                $trid++;
-                $productIds = [];
-                foreach ($chunkProducts[$i] as $product) {
-                    $productCombine = array_combine($headerProduct, $product);
-                    // dd($productCombine);
-
-                    $result = $this->productInsert($productCombine);
-                    $productCreated = Product::create($result);
-
-                    $productIds[] = $productCreated->ID;
-
-                    $meta = $this->productMetaInsert($productCombine);
-
-                    // dd($meta);
-
-                    $productCreated->meta()->createMany($meta);
-                    $years = explode(",", $productCombine['years']);
-                    $categories = explode(",", $productCombine['categories']);
-                    $termTaxonomy = [...$categories, ...$years];
-                    if (!empty($productCombine['attributes'])) {
-                        $termAttribute = explode(",", $productCombine['attributes']);
-                    }else {
-                        $termAttribute = [];
-                    }
-
-                    $termTaxonomy[] = 2;
-                    $termTaxonomy[] = $request->get('brand');
-                    $termTaxonomy[] = $productCombine['model'];
-
-                    $result = array_unique(array_merge($termTaxonomy, $termAttribute));
-
-                    $termTaxonomyIds = array_fill_keys($result, ['term_order' => 0]);
-
-                    DB::table('term_taxonomy')->whereIn('term_taxonomy_id', $result)->increment('count');
-
-                    $productCreated->term()->attach($termTaxonomyIds);
-                }
-
-                $thumbData = array_values($thumbArr)[$i];
-                $thumbData = array_combine($headerThumb, $thumbData);
-
-                $result = $this->productInsert($thumbData);
-                $result['post_status'] = "inherit";
-                $result['post_mime_type'] = $thumbData['post_mime_type'];
-
-                $thumbCreated = Product::create($result);
-
-                $metadata = [
-                    "width" => 800,
-                    "height" => 800,
-                    "file" => $thumbData['_wp_attached_file']
-                  ];
-
-                $thumbMeta = [
-                    [
-                        "meta_key" => "_wp_attached_file",
-                        "meta_value" => $thumbData['_wp_attached_file'],
-                    ],
-                    [
-                        "meta_key" => "_wp_attachment_metadata",
-                        "meta_value" => serialize($metadata)
-                    ]
-                ];
-                $thumbCreated->meta()->createMany($thumbMeta);
-
-                ProductMeta::insert([
-                    [
-                        "post_id" => $productIds[0],
-                        "meta_key" => "_thumbnail_id",
-                        "meta_value" => $thumbCreated->ID,
-                    ],
-                    [
-                        "post_id" => $productIds[1],
-                        "meta_key" => "_thumbnail_id",
-                        "meta_value" => $thumbCreated->ID,
-                    ]
-                ]);
-
-                $trid = DB::table('icl_translations')->insert([
-                    [
-                        'element_type' => 'post_product',
-                        'element_id' => $productIds[0],
-                        'trid' => $trid,
-                        'language_code' => 'en',
-                        'source_language_code' => null
-                    ],
-                    [
-                        'element_type' => 'post_product',
-                        'element_id' => $productIds[1],
-                        'trid' => $trid,
-                        'language_code' => 'ar',
-                        'source_language_code' => 'en'
-                    ]
-                ]);
-
-                DB::commit();
-            }
-
-            return redirect()
-                        ->back()
-                        ->with('success', 'Products created successfully!');
-        }
     }
 
     /**

@@ -16,7 +16,7 @@ class VehicleTaxonomySeeder extends Seeder
     {
         $terms = array_map(function($data) {
             return str_getcsv(mb_convert_encoding($data, 'UTF-8'), ",");
-        }, file('/home/u927736292/domains/cark-egypt.com/public_html/upload/public/upload/model.csv'));
+        }, file(public_path('upload\model.csv')));
 
         $items = [];
         foreach ($terms as $key => $term) {
@@ -26,12 +26,12 @@ class VehicleTaxonomySeeder extends Seeder
 
             $items[$term[0]] = $test;
         }
-        
+
         foreach ($items as $model => $item) {
             $slugModel = Str::slug($model, '-');
 
             $termModel = Term::updateOrCreate([
-                    'slug' => $slugModel, 
+                    'slug' => $slugModel,
                 ],[
                     'name' => $model,
                     'slug' => $slugModel,
@@ -55,13 +55,13 @@ class VehicleTaxonomySeeder extends Seeder
                 $slugMarker = $slugModel . '-' . Str::slug($marker, '-');
 
                 $termMarker = Term::updateOrCreate([
-                        'slug' => $slugMarker, 
+                        'slug' => $slugMarker,
                     ],[
                         'name' => $marker,
                         'slug' => $slugMarker,
                         'term_group' => 0
                     ]);
-    
+
                 Taxonomy::updateOrCreate([
                         'term_id' => $termMarker->term_id,
                         'taxonomy' => 'vehicle',
@@ -77,13 +77,13 @@ class VehicleTaxonomySeeder extends Seeder
                     $slugYear = $slugMarker . '-' . Str::slug($year, '-');
 
                     $termYear = Term::updateOrCreate([
-                            'slug' => $slugYear, 
+                            'slug' => $slugYear,
                         ],[
                             'name' => $year,
                             'slug' => $slugYear,
                             'term_group' => 0
                         ]);
-        
+
                     Taxonomy::updateOrCreate([
                             'term_id' => $termYear->term_id,
                             'taxonomy' => 'vehicle',
@@ -104,6 +104,6 @@ class VehicleTaxonomySeeder extends Seeder
         //         'sss' => [2000, 2001, 2002]
         //     ]
         // ];
-    
+
     }
 }

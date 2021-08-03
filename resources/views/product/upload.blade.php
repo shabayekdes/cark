@@ -47,13 +47,6 @@
                             <small id="productHelp" class="form-text text-muted">We'll never share your email with
                                 anyone else.</small>
                         </div>
-                        <div class="form-group">
-                            <label for="productImageLabel">Products Images</label>
-                            <input type="file" class="form-control" id="productImageLabel" name="thumb"
-                                aria-describedby="thumbHelp">
-                            <small id="thumbHelp" class="form-text text-muted">We'll never share your email with anyone
-                                else.</small>
-                        </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
