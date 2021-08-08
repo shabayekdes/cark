@@ -32,9 +32,9 @@ class ProductsImport implements ToCollection, WithHeadingRow
 
             $date = [
                 "post_author" => $row["product_author"],
-                "post_content" => $row["product_content"],
+                "post_content" => $row["product_content"] != null ? $row["product_content"] : '',
+                "post_excerpt" => $row["product_excerpt"] != null ? $row["product_excerpt"] : '',
                 "post_title" => $row["product_title"],
-                "post_excerpt" => $row["product_excerpt"],
                 "post_type" => 'product',
                 "post_date" => now(),
                 "post_date_gmt" => now(),
@@ -50,6 +50,7 @@ class ProductsImport implements ToCollection, WithHeadingRow
             ];
 
             $productCreated = Product::create($date);
+            // dd($productCreated);
 
             $meta = $this->productMetaInsert($row);
 
@@ -81,9 +82,9 @@ class ProductsImport implements ToCollection, WithHeadingRow
 
             $date = [
                 "post_author" => $row["product_author"],
-                "post_content" => $row["thumb_content"],
+                "post_content" => $row["thumb_content"] != null ? $row["thumb_content"] : '',
                 "post_title" => $row["thumb_title"],
-                "post_excerpt" => $row["thumb_excerpt"],
+                "post_excerpt" => $row["thumb_excerpt"] != null ? $row["thumb_excerpt"] : '',
                 "post_type" => 'attachment',
                 "post_date" => now(),
                 "post_date_gmt" => now(),
@@ -216,7 +217,7 @@ class ProductsImport implements ToCollection, WithHeadingRow
             ],
             [
                 "meta_key" => "_sale_price",
-                "meta_value" => $product['sale_price'],
+                "meta_value" => $product['sale_price'] != null ? $product['sale_price'] : '',
             ],
             [
                 "meta_key" => "_virtual",
@@ -224,7 +225,7 @@ class ProductsImport implements ToCollection, WithHeadingRow
             ],
             [
                 "meta_key" => "_price",
-                "meta_value" => $product['regular_price'],
+                "meta_value" => $product['regular_price'] != null ? $product['regular_price'] : '',
             ]
         ];
 
