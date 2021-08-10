@@ -60,6 +60,7 @@ class ProductsImport implements ToCollection, WithHeadingRow
             $years = explode(",", $row['years']);
             $categories = explode(",", $row['categories']);
             // $termTaxonomy = [...$categories, ...$years]; //php7.4
+            $termTaxonomy = array_unique(array_merge($years, $categories));
             if (!empty($row['attributes'])) {
                 $termAttribute = explode(",", $row['attributes']);
             }else {
