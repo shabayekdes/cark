@@ -118,14 +118,13 @@ class ProductsImport implements ToCollection, WithHeadingRow
                 [
                     "meta_key" => "_wp_attachment_metadata",
                     "meta_value" => serialize($metadata)
-                ],
-                [
-                    "post_id" => $productCreated->ID,
-                    "meta_key" => "_thumbnail_id",
-                    "meta_value" => $thumbCreated->ID,
                 ]
             ];
             $thumbCreated->meta()->createMany($thumbMeta);
+            $productCreated->meta()->create([
+                "meta_key" => "_thumbnail_id",
+                "meta_value" => $thumbCreated->ID,
+            ]);
 
         }
     }
